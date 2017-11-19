@@ -46,7 +46,9 @@ class Configurable_Navigation_Widgets {
 	 * Load required dependencies
 	 */
 	public function load_dependencies() {
-		// @todo: Load dependencies
+		require_once __DIR__ . '/widgets/class-base.php';
+		require_once __DIR__ . '/widgets/class-page-base.php';
+		require_once __DIR__ . '/widgets/class-current-page.php';
 	}
 
 	/**
@@ -94,7 +96,7 @@ class Configurable_Navigation_Widgets {
 	 * Initialise widgets.
 	 */
 	public static function widgets_init() {
-		// @todo: Initialise widgets
+		register_widget( Widgets\Current_Page::class );
 	}
 
 }
