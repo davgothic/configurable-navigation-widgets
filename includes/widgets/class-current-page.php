@@ -7,6 +7,8 @@
 
 namespace ConfigurableNavigationWidgets\Widgets;
 
+use ConfigurableNavigationWidgets\Widgets\Walkers\Current_Page_Walker;
+
 defined( 'ABSPATH' ) || die( 'No script kiddies please!' );
 
 /**
@@ -44,11 +46,11 @@ class Current_Page extends Page_Base {
 	/**
 	 * Display the widget
 	 *
-	 * @param array $args     Display arguments including 'before_title', 'after_title',
-	 *                        'before_widget', and 'after_widget'.
+	 * @param array $widget_args     Display arguments including 'before_title', 'after_title',
+	 *                               'before_widget', and 'after_widget'.
 	 * @param array $instance The settings for the particular instance of the widget.
 	 */
-	public function widget( $args, $instance ) {
+	public function widget( $widget_args, $instance ) {
 		// If we cant retrieve the current page/post object then we're done here.
 		$queried_object = get_queried_object();
 		if ( ! $queried_object ) {
@@ -61,15 +63,39 @@ class Current_Page extends Page_Base {
 		$sortby  = $this->get_sortby( $instance );
 		$exclude = $this->get_exclude( $instance );
 
-		echo $args['before_widget'];
+		echo $widget_args['before_widget'];
 
-		echo $args['before_title'], $title, $args['after_title'];
+		echo $widget_args['before_title'], $title, $widget_args['after_title'];
 
 
         // @todo: Consider the logic for here.
 
+		$args = array(
+			'depth'        => 0,
+			'exclude'      => '',
+			'sort_column'  => $sortby,
+			'link_before'  => '',
+			'link_after'   => '',
+			'item_spacing' => 'preserve',
+			'walker'       => new Current_Page_Walker(),
+		);
 
-		echo $args['after_widget'];
+		// Get all page objects
+		$pages = get_pages( $args );
+
+		// sanitize, mostly to keep spaces out
+		$args['exclude']      = preg_replace( '/[^0-9,]/', '', $exclude );
+		$args['exclude']      = apply_filters( 'cnw_excludes', $args['exclude'] );
+		$args['exclude']      = $args['exclude'] ? explode( ',', $args['exclude'] ) : [];
+		$args['hierarchical'] = 0;
+
+		$output = walk_page_tree( $pages, $this->defaults['levels_deep'], $post_id, $args );
+
+		echo '<ul>';
+		echo $output;
+		echo '</ul>';
+
+		echo $widget_args['after_widget'];
 	}
 
 	/**

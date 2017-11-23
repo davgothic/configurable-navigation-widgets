@@ -49,6 +49,7 @@ class Configurable_Navigation_Widgets {
 		require_once __DIR__ . '/widgets/class-base.php';
 		require_once __DIR__ . '/widgets/class-page-base.php';
 		require_once __DIR__ . '/widgets/class-current-page.php';
+		require_once __DIR__ . '/widgets/walkers/class-current-page-walker.php';
 	}
 
 	/**
