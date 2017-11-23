@@ -81,7 +81,30 @@ class Current_Page extends Page_Base {
 		);
 
 		// Get all page objects
-		$pages = get_pages( $args );
+		$tmp_pages = get_pages( $args );
+
+		if ( true === $this->defaults['show_current_tree_children_only'] ) {
+			$queried_object_root_id = ( 0 !== $queried_object->post_parent )
+				? end( $queried_object->ancestors )
+				: $queried_object->ID;
+
+			$queried_object_root_children = get_page_children( $queried_object_root_id, $tmp_pages );
+			$queried_object_root_children = array_map( function ( $n ) {
+				return $n->ID;
+			}, $queried_object_root_children );
+
+			$pages = [];
+			foreach ( $tmp_pages as $key => $page ) {
+				if (
+					0 === $page->post_parent
+					|| in_array( $page->ID, $queried_object_root_children, false )
+				) {
+					$pages[] = $page;
+				}
+			}
+		} else {
+			$pages = $tmp_pages;
+		}
 
 		// sanitize, mostly to keep spaces out
 		$args['exclude']      = preg_replace( '/[^0-9,]/', '', $exclude );
