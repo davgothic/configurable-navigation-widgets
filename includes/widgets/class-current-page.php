@@ -63,6 +63,8 @@ class Current_Page extends Page_Base {
 		$sortby  = $this->get_sortby( $instance );
 		$exclude = $this->get_exclude( $instance );
 
+		// @todo: Add include_parent_item functionality.
+		$include_parent_item             = empty( $instance['include_parent_item'] ) ? $this->defaults['include_parent_item'] : 'on' === $instance['include_parent_item'];
 		$levels_deep                     = empty( $instance['levels_deep'] ) ? $this->defaults['levels_deep'] : (int) $instance['levels_deep'];
 		$show_current_tree_children_only = empty( $instance['show_current_tree_children_only'] ) ? $this->defaults['show_current_tree_children_only'] : 'on' === $instance['show_current_tree_children_only'];
 
@@ -137,6 +139,8 @@ class Current_Page extends Page_Base {
 		$this->update_sortby( $new_instance, $instance );
 		$this->update_exclude( $new_instance, $instance );
 
+		$instance['include_parent_item'] = $new_instance['include_parent_item'];
+
 		if ( in_array( (int) $new_instance['levels_deep'], range( 1, 5 ), true ) ) {
 			$instance['levels_deep'] = $new_instance['levels_deep'];
 		} else {
@@ -163,6 +167,11 @@ class Current_Page extends Page_Base {
 		$this->form_exclude( $instance );
 
 		?>
+		<p>
+			<input class="checkbox" type="checkbox" <?php checked( $instance['include_parent_item'], 'on' ); ?> id="<?php echo $this->get_field_id( 'include_parent_item' ); ?>" name="<?php echo $this->get_field_name( 'include_parent_item' ); ?>" />
+			<label for="<?php echo $this->get_field_id( 'include_parent_item' ); ?>">Include parent item?</label>
+		</p>
+
 		<p>
 			<label for="<?php echo esc_attr( $this->get_field_id( 'levels_deep' ) ); ?>"><?php _e( 'Levels deep:' ); ?></label>
 			<select name="<?php echo esc_attr( $this->get_field_name( 'levels_deep' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'levels_deep' ) ); ?>" class="widefat">
