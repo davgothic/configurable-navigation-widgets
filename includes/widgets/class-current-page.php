@@ -67,6 +67,7 @@ class Current_Page extends Page_Base {
 		$include_parent_item             = empty( $instance['include_parent_item'] ) ? $this->defaults['include_parent_item'] : 'on' === $instance['include_parent_item'];
 		$levels_deep                     = empty( $instance['levels_deep'] ) ? $this->defaults['levels_deep'] : (int) $instance['levels_deep'];
 		$show_current_tree_children_only = empty( $instance['show_current_tree_children_only'] ) ? $this->defaults['show_current_tree_children_only'] : 'on' === $instance['show_current_tree_children_only'];
+		$mobile_friendly                 = empty( $instance['mobile_friendly'] ) ? $this->defaults['mobile_friendly'] : 'on' === $instance['mobile_friendly'];
 
 		echo $widget_args['before_widget'];
 
@@ -117,7 +118,13 @@ class Current_Page extends Page_Base {
 
 		$output = walk_page_tree( $pages, $levels_deep, $post_id, $args );
 
-		echo '<ul>';
+		$classes = [ 'cnw-navigation' ];
+
+		if ( $mobile_friendly ) {
+			$classes[] = 'cnw-mobile-fiendly';
+		}
+
+		echo '<ul class="' . esc_attr( implode( ' ', $classes ) ) . '">';
 		echo $output;
 		echo '</ul>';
 
@@ -148,6 +155,7 @@ class Current_Page extends Page_Base {
 		}
 
 		$instance['show_current_tree_children_only'] = 'on' === $new_instance['show_current_tree_children_only'] ? 'on' : 'off';
+		$instance['mobile_friendly']                 = 'on' === $new_instance['mobile_friendly'] ? 'on' : 'off';
 
 		return $instance;
 	}
@@ -184,6 +192,11 @@ class Current_Page extends Page_Base {
 		<p>
 			<input class="checkbox" type="checkbox" <?php checked( $instance['show_current_tree_children_only'], 'on' ); ?> id="<?php echo $this->get_field_id( 'show_current_tree_children_only' ); ?>" name="<?php echo $this->get_field_name( 'show_current_tree_children_only' ); ?>" />
 			<label for="<?php echo $this->get_field_id( 'show_current_tree_children_only' ); ?>">Show current tree children only?</label>
+		</p>
+
+		<p>
+			<input class="checkbox" type="checkbox" <?php checked( $instance['mobile_friendly'], 'on' ); ?> id="<?php echo $this->get_field_id( 'mobile_friendly' ); ?>" name="<?php echo $this->get_field_name( 'mobile_friendly' ); ?>" />
+			<label for="<?php echo $this->get_field_id( 'mobile_friendly' ); ?>">Mobile friendly?</label>
 		</p>
 		<?php
 	}
