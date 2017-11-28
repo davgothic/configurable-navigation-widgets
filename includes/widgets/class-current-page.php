@@ -63,6 +63,7 @@ class Current_Page extends Page_Base {
 		$sortby  = $this->get_sortby( $instance );
 		$exclude = $this->get_exclude( $instance );
 
+		$levels_deep                     = empty( $instance['levels_deep'] ) ? $this->defaults['levels_deep'] : (int) $instance['levels_deep'];
 		$show_current_tree_children_only = empty( $instance['show_current_tree_children_only'] ) ? $this->defaults['show_current_tree_children_only'] : 'on' === $instance['show_current_tree_children_only'];
 
 		echo $widget_args['before_widget'];
@@ -112,7 +113,7 @@ class Current_Page extends Page_Base {
 		$args['exclude']      = $args['exclude'] ? explode( ',', $args['exclude'] ) : [];
 		$args['hierarchical'] = 0;
 
-		$output = walk_page_tree( $pages, $this->defaults['levels_deep'], $post_id, $args );
+		$output = walk_page_tree( $pages, $levels_deep, $post_id, $args );
 
 		echo '<ul>';
 		echo $output;
@@ -136,6 +137,12 @@ class Current_Page extends Page_Base {
 		$this->update_sortby( $new_instance, $instance );
 		$this->update_exclude( $new_instance, $instance );
 
+		if ( in_array( (int) $new_instance['levels_deep'], range( 1, 5 ), true ) ) {
+			$instance['levels_deep'] = $new_instance['levels_deep'];
+		} else {
+			$instance['levels_deep'] = $this->defaults['levels_deep'];
+		}
+
 		$instance['show_current_tree_children_only'] = 'on' === $new_instance['show_current_tree_children_only'] ? 'on' : 'off';
 
 		return $instance;
@@ -156,6 +163,15 @@ class Current_Page extends Page_Base {
 		$this->form_exclude( $instance );
 
 		?>
+		<p>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'levels_deep' ) ); ?>"><?php _e( 'Levels deep:' ); ?></label>
+			<select name="<?php echo esc_attr( $this->get_field_name( 'levels_deep' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'levels_deep' ) ); ?>" class="widefat">
+				<?php foreach ( range( 1, 5 ) as $i ) : ?>
+					<option value="<?php echo $i; ?>"<?php selected( $instance['levels_deep'], $i ); ?>><?php echo $i; ?></option>
+				<?php endforeach; ?>
+			</select>
+		</p>
+
 		<p>
 			<input class="checkbox" type="checkbox" <?php checked( $instance['show_current_tree_children_only'], 'on' ); ?> id="<?php echo $this->get_field_id( 'show_current_tree_children_only' ); ?>" name="<?php echo $this->get_field_name( 'show_current_tree_children_only' ); ?>" />
 			<label for="<?php echo $this->get_field_id( 'show_current_tree_children_only' ); ?>">Show current tree children only?</label>
