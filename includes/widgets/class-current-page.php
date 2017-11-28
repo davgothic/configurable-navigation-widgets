@@ -69,6 +69,7 @@ class Current_Page extends Page_Base {
 		$show_current_tree_children_only = empty( $instance['show_current_tree_children_only'] ) ? $this->defaults['show_current_tree_children_only'] : 'on' === $instance['show_current_tree_children_only'];
 		$mobile_friendly                 = empty( $instance['mobile_friendly'] ) ? $this->defaults['mobile_friendly'] : 'on' === $instance['mobile_friendly'];
 		$fixed_positioning               = empty( $instance['fixed_positioning'] ) ? $this->defaults['fixed_positioning'] : 'on' === $instance['fixed_positioning'];
+		$height_aware                    = empty( $instance['height_aware'] ) ? $this->defaults['height_aware'] : 'on' === $instance['height_aware'];
 
 		echo $widget_args['before_widget'];
 
@@ -129,6 +130,10 @@ class Current_Page extends Page_Base {
 			$classes[] = 'cnw-fixed_positioning';
 		}
 
+		if ( $height_aware ) {
+			$classes[] = 'cnw-height_aware';
+		}
+
 		echo '<ul class="' . esc_attr( implode( ' ', $classes ) ) . '">';
 		echo $output;
 		echo '</ul>';
@@ -162,6 +167,7 @@ class Current_Page extends Page_Base {
 		$instance['show_current_tree_children_only'] = 'on' === $new_instance['show_current_tree_children_only'] ? 'on' : 'off';
 		$instance['mobile_friendly']                 = 'on' === $new_instance['mobile_friendly'] ? 'on' : 'off';
 		$instance['fixed_positioning']               = 'on' === $new_instance['fixed_positioning'] ? 'on' : 'off';
+		$instance['height_aware']                    = 'on' === $new_instance['height_aware'] ? 'on' : 'off';
 
 		return $instance;
 	}
@@ -208,6 +214,11 @@ class Current_Page extends Page_Base {
 		<p>
 			<input class="checkbox" type="checkbox" <?php checked( $instance['fixed_positioning'], 'on' ); ?> id="<?php echo $this->get_field_id( 'fixed_positioning' ); ?>" name="<?php echo $this->get_field_name( 'fixed_positioning' ); ?>" />
 			<label for="<?php echo $this->get_field_id( 'fixed_positioning' ); ?>">Fixed positioning?</label>
+		</p>
+
+		<p>
+			<input class="checkbox" type="checkbox" <?php checked( $instance['height_aware'], 'on' ); ?> id="<?php echo $this->get_field_id( 'height_aware' ); ?>" name="<?php echo $this->get_field_name( 'height_aware' ); ?>" />
+			<label for="<?php echo $this->get_field_id( 'height_aware' ); ?>">Height aware?</label>
 		</p>
 		<?php
 	}
