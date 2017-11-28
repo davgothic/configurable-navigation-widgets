@@ -68,6 +68,7 @@ class Current_Page extends Page_Base {
 		$levels_deep                     = empty( $instance['levels_deep'] ) ? $this->defaults['levels_deep'] : (int) $instance['levels_deep'];
 		$show_current_tree_children_only = empty( $instance['show_current_tree_children_only'] ) ? $this->defaults['show_current_tree_children_only'] : 'on' === $instance['show_current_tree_children_only'];
 		$mobile_friendly                 = empty( $instance['mobile_friendly'] ) ? $this->defaults['mobile_friendly'] : 'on' === $instance['mobile_friendly'];
+		$fixed_positioning               = empty( $instance['fixed_positioning'] ) ? $this->defaults['fixed_positioning'] : 'on' === $instance['fixed_positioning'];
 
 		echo $widget_args['before_widget'];
 
@@ -124,6 +125,10 @@ class Current_Page extends Page_Base {
 			$classes[] = 'cnw-mobile-fiendly';
 		}
 
+		if ( $fixed_positioning ) {
+			$classes[] = 'cnw-fixed_positioning';
+		}
+
 		echo '<ul class="' . esc_attr( implode( ' ', $classes ) ) . '">';
 		echo $output;
 		echo '</ul>';
@@ -156,6 +161,7 @@ class Current_Page extends Page_Base {
 
 		$instance['show_current_tree_children_only'] = 'on' === $new_instance['show_current_tree_children_only'] ? 'on' : 'off';
 		$instance['mobile_friendly']                 = 'on' === $new_instance['mobile_friendly'] ? 'on' : 'off';
+		$instance['fixed_positioning']               = 'on' === $new_instance['fixed_positioning'] ? 'on' : 'off';
 
 		return $instance;
 	}
@@ -197,6 +203,11 @@ class Current_Page extends Page_Base {
 		<p>
 			<input class="checkbox" type="checkbox" <?php checked( $instance['mobile_friendly'], 'on' ); ?> id="<?php echo $this->get_field_id( 'mobile_friendly' ); ?>" name="<?php echo $this->get_field_name( 'mobile_friendly' ); ?>" />
 			<label for="<?php echo $this->get_field_id( 'mobile_friendly' ); ?>">Mobile friendly?</label>
+		</p>
+
+		<p>
+			<input class="checkbox" type="checkbox" <?php checked( $instance['fixed_positioning'], 'on' ); ?> id="<?php echo $this->get_field_id( 'fixed_positioning' ); ?>" name="<?php echo $this->get_field_name( 'fixed_positioning' ); ?>" />
+			<label for="<?php echo $this->get_field_id( 'fixed_positioning' ); ?>">Fixed positioning?</label>
 		</p>
 		<?php
 	}
