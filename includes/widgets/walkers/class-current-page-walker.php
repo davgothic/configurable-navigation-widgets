@@ -14,9 +14,15 @@ defined( 'ABSPATH' ) || die( 'No script kiddies please!' );
  */
 class Current_Page_Walker extends \Walker {
 
+	/**
+	 * Current_Page_Walker constructor.
+	 */
 	public function __construct() {
 		$this->tree_type = 'page';
-		$this->db_fields = [ 'parent' => 'post_parent', 'id' => 'ID' ];
+		$this->db_fields = [
+			'parent' => 'post_parent',
+			'id'     => 'ID',
+		];
 	}
 
 	/**
@@ -28,7 +34,8 @@ class Current_Page_Walker extends \Walker {
 	 *                       Default empty array.
 	 */
 	public function start_lvl( &$output, $depth = 0, $args = array() ) {
-		$t = $n = '';
+		$t = '';
+		$n = '';
 		if ( isset( $args['item_spacing'] ) && 'preserve' === $args['item_spacing'] ) {
 			$t = "\t";
 			$n = "\n";
@@ -46,7 +53,8 @@ class Current_Page_Walker extends \Walker {
 	 *                       Default empty array.
 	 */
 	public function end_lvl( &$output, $depth = 0, $args = array() ) {
-		$t = $n = '';
+		$t = '';
+		$n = '';
 		if ( isset( $args['item_spacing'] ) && 'preserve' === $args['item_spacing'] ) {
 			$t = "\t";
 			$n = "\n";
@@ -75,15 +83,15 @@ class Current_Page_Walker extends \Walker {
 
 		if ( ! empty( $current_page ) ) {
 			$_current_page = get_post( $current_page );
-			if ( $_current_page && in_array( $page->ID, $_current_page->ancestors ) ) {
+			if ( $_current_page && in_array( $page->ID, $_current_page->ancestors, true ) ) {
 				$css_class[] = 'current_page_ancestor';
 			}
-			if ( $page->ID == $current_page ) {
+			if ( $page->ID === $current_page ) {
 				$css_class[] = 'current_page_item';
-			} elseif ( $_current_page && $page->ID == $_current_page->post_parent ) {
+			} elseif ( $_current_page && $page->ID === $_current_page->post_parent ) {
 				$css_class[] = 'current_page_parent';
 			}
-		} elseif ( $page->ID == get_option('page_for_posts') ) {
+		} elseif ( get_option( 'page_for_posts' ) === $page->ID ) {
 			$css_class[] = 'current_page_parent';
 		}
 
@@ -136,14 +144,14 @@ class Current_Page_Walker extends \Walker {
 		}
 
 		$output .= $indent . sprintf(
-				'<li class="%s"><a%s>%s%s%s</a>',
-				$css_classes,
-				$attributes,
-				$args['link_before'],
-				/** This filter is documented in wp-includes/post-template.php */
-				apply_filters( 'the_title', $page->post_title, $page->ID ),
-				$args['link_after']
-			);
+			'<li class="%s"><a%s>%s%s%s</a>',
+			$css_classes,
+			$attributes,
+			$args['link_before'],
+			/** This filter is documented in wp-includes/post-template.php */
+			apply_filters( 'the_title', $page->post_title, $page->ID ),
+			$args['link_after']
+		);
 	}
 
 	/**
