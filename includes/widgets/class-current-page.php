@@ -67,9 +67,7 @@ class Current_Page extends Page_Base {
 
 		echo $widget_args['before_title'], $title, $widget_args['after_title'];
 
-
-        // @todo: Consider the logic for here.
-
+		// @todo: Consider the logic for here.
 		$args = array(
 			'depth'        => 0,
 			'exclude'      => '',
@@ -80,7 +78,7 @@ class Current_Page extends Page_Base {
 			'walker'       => new Current_Page_Walker(),
 		);
 
-		// Get all page objects
+		// Get all page objects.
 		$tmp_pages = get_pages( $args );
 
 		if ( true === $this->defaults['show_current_tree_children_only'] ) {
@@ -97,7 +95,7 @@ class Current_Page extends Page_Base {
 			foreach ( $tmp_pages as $key => $page ) {
 				if (
 					0 === $page->post_parent
-					|| in_array( $page->ID, $queried_object_root_children, false )
+					|| in_array( $page->ID, $queried_object_root_children, true )
 				) {
 					$pages[] = $page;
 				}
@@ -106,7 +104,7 @@ class Current_Page extends Page_Base {
 			$pages = $tmp_pages;
 		}
 
-		// sanitize, mostly to keep spaces out
+		// sanitize, mostly to keep spaces out.
 		$args['exclude']      = preg_replace( '/[^0-9,]/', '', $exclude );
 		$args['exclude']      = apply_filters( 'cnw_excludes', $args['exclude'] );
 		$args['exclude']      = $args['exclude'] ? explode( ',', $args['exclude'] ) : [];
