@@ -63,6 +63,8 @@ class Current_Page extends Page_Base {
 		$sortby  = $this->get_sortby( $instance );
 		$exclude = $this->get_exclude( $instance );
 
+		$show_current_tree_children_only = empty( $instance['show_current_tree_children_only'] ) ? $this->defaults['show_current_tree_children_only'] : 'on' === $instance['show_current_tree_children_only'];
+
 		echo $widget_args['before_widget'];
 
 		echo $widget_args['before_title'], $title, $widget_args['after_title'];
@@ -81,7 +83,7 @@ class Current_Page extends Page_Base {
 		// Get all page objects.
 		$tmp_pages = get_pages( $args );
 
-		if ( true === $this->defaults['show_current_tree_children_only'] ) {
+		if ( true === $show_current_tree_children_only ) {
 			$queried_object_root_id = ( 0 !== $queried_object->post_parent )
 				? end( $queried_object->ancestors )
 				: $queried_object->ID;
@@ -134,6 +136,8 @@ class Current_Page extends Page_Base {
 		$this->update_sortby( $new_instance, $instance );
 		$this->update_exclude( $new_instance, $instance );
 
+		$instance['show_current_tree_children_only'] = 'on' === $new_instance['show_current_tree_children_only'] ? 'on' : 'off';
+
 		return $instance;
 	}
 
@@ -150,6 +154,13 @@ class Current_Page extends Page_Base {
 		$this->form_title( $instance );
 		$this->form_sortby( $instance );
 		$this->form_exclude( $instance );
+
+		?>
+		<p>
+			<input class="checkbox" type="checkbox" <?php checked( $instance['show_current_tree_children_only'], 'on' ); ?> id="<?php echo $this->get_field_id( 'show_current_tree_children_only' ); ?>" name="<?php echo $this->get_field_name( 'show_current_tree_children_only' ); ?>" />
+			<label for="<?php echo $this->get_field_id( 'show_current_tree_children_only' ); ?>">Show current tree children only?</label>
+		</p>
+		<?php
 	}
 
 }
