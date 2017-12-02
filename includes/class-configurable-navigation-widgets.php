@@ -60,7 +60,120 @@ class Configurable_Navigation_Widgets {
 			return;
 		}
 
+		add_action( 'admin_init', [ $this, 'register_settings' ] );
+		add_action( 'admin_menu', [ $this, 'register_options_page' ] );
 		add_action( 'widgets_init', [ $this, 'widgets_init' ] );
+	}
+
+	/**
+	 * Register plugin settings.
+	 */
+	public function register_settings() {
+		register_setting( 'cnw', 'cnw_icon_collection' );
+		register_setting( 'cnw', 'cnw_mobile_friendly_breakpoint' );
+
+		add_settings_section(
+			'default',
+			'',
+			'__return_null',
+			'cnw'
+		);
+
+		add_settings_field(
+			'cnw_icon_collection',
+			__( 'Icon Collection', 'cnw' ),
+			[ $this, 'field_icon_collection_cb' ],
+			'cnw',
+			'default',
+			[
+				'label_for' => 'cnw_icon_collection',
+			]
+		);
+
+		add_settings_field(
+			'cnw_mobile_friendly_breakpoint',
+			__( 'Mobile Friendly Breakpoint', 'cnw' ),
+			[ $this, 'field_mobile_friendly_breakpoint_cb' ],
+			'cnw',
+			'default',
+			[
+				'label_for' => 'cnw_mobile_friendly_breakpoint',
+			]
+		);
+	}
+
+	/**
+	 * Render icon collection field.
+	 *
+	 * @param array $args Field arguments.
+	 */
+	public function field_icon_collection_cb( $args ) {
+		$option = get_option( 'cnw_icon_collection' );
+		?>
+		<select id="<?php echo esc_attr( $args['label_for'] ); ?>"
+				name="cnw_icon_collection"
+		>
+			<option value="fontawesome" <?php selected( $option, 'fontawesome' ); ?>>
+				<?php esc_html_e( 'FontAwesome', 'cnw' ); ?>
+			</option>
+		</select>
+		<p class="description">
+			<?php esc_html_e( 'Choose the icon collection you would like to use for navigation item icons.', 'cnw' ); ?>
+		</p>
+		<?php
+	}
+
+	/**
+	 * Render mobile friendly breakpoint field.
+	 *
+	 * @param array $args Field arguments.
+	 */
+	public function field_mobile_friendly_breakpoint_cb( $args ) {
+		$option = get_option( 'cnw_mobile_friendly_breakpoint' );
+		?>
+		<input id="<?php echo esc_attr( $args['label_for'] ); ?>"
+				name="cnw_mobile_friendly_breakpoint"
+				type="text"
+				class="small-text"
+				value="<?php echo esc_attr( $option ); ?>">
+		<p class="description">
+			<?php esc_html_e( 'A pixel value to determine at what breakpoint the widget changes to mobile mode.', 'cnw' ); ?>
+		</p>
+		<?php
+	}
+
+	/**
+	 * Register options page.
+	 */
+	public function register_options_page() {
+		add_options_page(
+			'Configurable Navigation Widgets',
+			'Configurable Navigation Widgets',
+			'manage_options',
+			'cnw',
+			[ $this, 'options_page' ]
+		);
+	}
+
+	/**
+	 * Options page markup.
+	 */
+	public function options_page() {
+		// Check user capabilities.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		?>
+		<div class="wrap">
+			<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
+			<form method="post" action="options.php">
+				<?php settings_fields( 'cnw' ); ?>
+				<?php do_settings_sections( 'cnw' ); ?>
+				<?php submit_button(); ?>
+			</form>
+		</div>
+		<?php
 	}
 
 	/**
