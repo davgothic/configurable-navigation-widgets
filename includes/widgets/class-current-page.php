@@ -59,17 +59,16 @@ class Current_Page extends Page_Base {
 
 		$post_id = $queried_object->ID;
 
-		$title   = $this->get_title( $instance );
-		$sortby  = $this->get_sortby( $instance );
-		$exclude = $this->get_exclude( $instance );
-
 		// @todo: Add include_parent_item functionality.
-		$include_parent_item             = empty( $instance['include_parent_item'] ) ? $this->defaults['include_parent_item'] : 'on' === $instance['include_parent_item'];
-		$levels_deep                     = empty( $instance['levels_deep'] ) ? $this->defaults['levels_deep'] : (int) $instance['levels_deep'];
-		$show_current_tree_children_only = empty( $instance['show_current_tree_children_only'] ) ? $this->defaults['show_current_tree_children_only'] : 'on' === $instance['show_current_tree_children_only'];
-		$mobile_friendly                 = empty( $instance['mobile_friendly'] ) ? $this->defaults['mobile_friendly'] : 'on' === $instance['mobile_friendly'];
-		$fixed_positioning               = empty( $instance['fixed_positioning'] ) ? $this->defaults['fixed_positioning'] : 'on' === $instance['fixed_positioning'];
-		$height_aware                    = empty( $instance['height_aware'] ) ? $this->defaults['height_aware'] : 'on' === $instance['height_aware'];
+		$title                           = $this->get_title( $instance );
+		$sortby                          = $this->get_sortby( $instance );
+		$exclude                         = $this->get_exclude( $instance );
+		$levels_deep                     = $this->get_levels_deep( $instance );
+		$include_parent_item             = $this->get_include_parent_item( $instance );
+		$show_current_tree_children_only = $this->get_show_current_tree_children_only( $instance );
+		$mobile_friendly                 = $this->get_mobile_friendly( $instance );
+		$fixed_positioning               = $this->get_fixed_positioning( $instance );
+		$height_aware                    = $this->get_height_aware( $instance );
 
 		echo $widget_args['before_widget'];
 
@@ -155,19 +154,11 @@ class Current_Page extends Page_Base {
 		$this->update_title( $new_instance, $instance );
 		$this->update_sortby( $new_instance, $instance );
 		$this->update_exclude( $new_instance, $instance );
-
-		$instance['include_parent_item'] = $new_instance['include_parent_item'];
-
-		if ( in_array( (int) $new_instance['levels_deep'], range( 1, 5 ), true ) ) {
-			$instance['levels_deep'] = $new_instance['levels_deep'];
-		} else {
-			$instance['levels_deep'] = $this->defaults['levels_deep'];
-		}
-
-		$instance['show_current_tree_children_only'] = 'on' === $new_instance['show_current_tree_children_only'] ? 'on' : 'off';
-		$instance['mobile_friendly']                 = 'on' === $new_instance['mobile_friendly'] ? 'on' : 'off';
-		$instance['fixed_positioning']               = 'on' === $new_instance['fixed_positioning'] ? 'on' : 'off';
-		$instance['height_aware']                    = 'on' === $new_instance['height_aware'] ? 'on' : 'off';
+		$this->update_include_parent_item( $new_instance, $instance );
+		$this->update_show_current_tree_children_only( $new_instance, $instance );
+		$this->update_mobile_friendly( $new_instance, $instance );
+		$this->update_fixed_positioning( $new_instance, $instance );
+		$this->update_height_aware( $new_instance, $instance );
 
 		return $instance;
 	}
@@ -185,42 +176,12 @@ class Current_Page extends Page_Base {
 		$this->form_title( $instance );
 		$this->form_sortby( $instance );
 		$this->form_exclude( $instance );
-
-		?>
-		<p>
-			<input class="checkbox" type="checkbox" <?php checked( $instance['include_parent_item'], 'on' ); ?> id="<?php echo $this->get_field_id( 'include_parent_item' ); ?>" name="<?php echo $this->get_field_name( 'include_parent_item' ); ?>" />
-			<label for="<?php echo $this->get_field_id( 'include_parent_item' ); ?>">Include parent item?</label>
-		</p>
-
-		<p>
-			<label for="<?php echo esc_attr( $this->get_field_id( 'levels_deep' ) ); ?>"><?php _e( 'Levels deep:' ); ?></label>
-			<select name="<?php echo esc_attr( $this->get_field_name( 'levels_deep' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'levels_deep' ) ); ?>" class="widefat">
-				<?php foreach ( range( 1, 5 ) as $i ) : ?>
-					<option value="<?php echo $i; ?>"<?php selected( $instance['levels_deep'], $i ); ?>><?php echo $i; ?></option>
-				<?php endforeach; ?>
-			</select>
-		</p>
-
-		<p>
-			<input class="checkbox" type="checkbox" <?php checked( $instance['show_current_tree_children_only'], 'on' ); ?> id="<?php echo $this->get_field_id( 'show_current_tree_children_only' ); ?>" name="<?php echo $this->get_field_name( 'show_current_tree_children_only' ); ?>" />
-			<label for="<?php echo $this->get_field_id( 'show_current_tree_children_only' ); ?>">Show current tree children only?</label>
-		</p>
-
-		<p>
-			<input class="checkbox" type="checkbox" <?php checked( $instance['mobile_friendly'], 'on' ); ?> id="<?php echo $this->get_field_id( 'mobile_friendly' ); ?>" name="<?php echo $this->get_field_name( 'mobile_friendly' ); ?>" />
-			<label for="<?php echo $this->get_field_id( 'mobile_friendly' ); ?>">Mobile friendly?</label>
-		</p>
-
-		<p>
-			<input class="checkbox" type="checkbox" <?php checked( $instance['fixed_positioning'], 'on' ); ?> id="<?php echo $this->get_field_id( 'fixed_positioning' ); ?>" name="<?php echo $this->get_field_name( 'fixed_positioning' ); ?>" />
-			<label for="<?php echo $this->get_field_id( 'fixed_positioning' ); ?>">Fixed positioning?</label>
-		</p>
-
-		<p>
-			<input class="checkbox" type="checkbox" <?php checked( $instance['height_aware'], 'on' ); ?> id="<?php echo $this->get_field_id( 'height_aware' ); ?>" name="<?php echo $this->get_field_name( 'height_aware' ); ?>" />
-			<label for="<?php echo $this->get_field_id( 'height_aware' ); ?>">Height aware?</label>
-		</p>
-		<?php
+		$this->form_levels_deep( $instance );
+		$this->form_include_parent_item( $instance );
+		$this->form_show_current_tree_children_only( $instance );
+		$this->form_mobile_friendly( $instance );
+		$this->form_fixed_positioning( $instance );
+		$this->form_height_aware( $instance );
 	}
 
 }
