@@ -60,9 +60,28 @@ class Configurable_Navigation_Widgets {
 			return;
 		}
 
+		add_action( 'admin_enqueue_scripts', [ $this, 'admin_enqueue_scripts' ] );
+		add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 		add_action( 'admin_init', [ $this, 'register_settings' ] );
 		add_action( 'admin_menu', [ $this, 'register_options_page' ] );
 		add_action( 'widgets_init', [ $this, 'widgets_init' ] );
+	}
+
+	/**
+	 * Enqueue admin stylesheets and scripts.
+	 */
+	public function admin_enqueue_scripts() {
+		wp_enqueue_style( 'font-awesome', CNW_DIR_URL . 'css/font-awesome.min.css' );
+		wp_enqueue_style( 'select2', CNW_DIR_URL . 'css/select2.min.css' );
+		wp_enqueue_script( 'select2', CNW_DIR_URL . 'js/select2.min.js', [ 'jquery' ] );
+		wp_enqueue_script( 'cnw-admin', CNW_DIR_URL . 'js/admin.js', [ 'jquery', 'select2' ] );
+	}
+
+	/**
+	 * Enqueue stylesheets and scripts.
+	 */
+	public function enqueue_scripts() {
+		wp_enqueue_style( 'font-awesome', CNW_DIR_URL . 'css/font-awesome.min.css' );
 	}
 
 	/**
@@ -113,7 +132,7 @@ class Configurable_Navigation_Widgets {
 		<select id="<?php echo esc_attr( $args['label_for'] ); ?>"
 				name="cnw_icon_collection"
 		>
-			<option value="fontawesome" <?php selected( $option, 'fontawesome' ); ?>>
+			<option value="font-awesome" <?php selected( $option, 'font-awesome' ); ?>>
 				<?php esc_html_e( 'FontAwesome', 'cnw' ); ?>
 			</option>
 		</select>

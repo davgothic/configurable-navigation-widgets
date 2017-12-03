@@ -143,15 +143,17 @@ class Current_Page_Walker extends \Walker {
 			}
 		}
 
-		$output .= $indent . sprintf(
-			'<li class="%s"><a%s>%s%s%s</a>',
-			$css_classes,
-			$attributes,
-			$args['link_before'],
-			/** This filter is documented in wp-includes/post-template.php */
-			apply_filters( 'the_title', $page->post_title, $page->ID ),
-			$args['link_after']
-		);
+		$output .= $indent . '<li class="' . $css_classes . '">';
+		$output .= '<a' . $attributes . '>';
+		$output .= $args['link_before'];
+
+		if ( $args['list_item_icon'] ) {
+			$output .= '<i class="fa ' . $args['list_item_icon'] . '"></i> ';
+		}
+
+		$output .= apply_filters( 'the_title', $page->post_title, $page->ID );
+		$output .= $args['link_after'];
+		$output .= '</a>';
 	}
 
 	/**

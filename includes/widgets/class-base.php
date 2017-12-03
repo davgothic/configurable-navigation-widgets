@@ -296,4 +296,54 @@ class Base extends \WP_Widget {
 		<?php
 	}
 
+	/**
+	 * Retrieve the list_item_icon value.
+	 *
+	 * @param array $instance The settings for the particular instance of the widget.
+	 *
+	 * @return string
+	 */
+	public function get_list_item_icon( $instance ) {
+		$list_item_icon = empty( $instance['list_item_icon'] ) ? $this->defaults['list_item_icon'] : $instance['list_item_icon'];
+
+		return $list_item_icon;
+	}
+
+	/**
+	 * Update the current instance list_item_icon.
+	 *
+	 * @param array $new_instance New settings for this instance as input by the user via
+	 *                            WP_Widget::form().
+	 * @param array $instance Current settings for this instance.
+	 */
+	public function update_list_item_icon( $new_instance, &$instance ) {
+		$icons = include __DIR__ . '/../icons/font-awesome.php';
+
+		if ( in_array( $new_instance['list_item_icon'], $icons, true ) ) {
+			$instance['list_item_icon'] = $new_instance['list_item_icon'];
+		} else {
+			$instance['list_item_icon'] = $this->defaults['list_item_icon'];
+		}
+	}
+
+	/**
+	 * Output the list_item_icon form fields.
+	 *
+	 * @param array $instance The settings for the particular instance of the widget.
+	 */
+	public function form_list_item_icon( $instance ) {
+		$icons = include __DIR__ . '/../icons/font-awesome.php';
+		?>
+		<p>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'list_item_icon' ) ); ?>"><?php _e( 'List Item Icon:' ); ?></label>
+			<select name="<?php echo esc_attr( $this->get_field_name( 'list_item_icon' ) ); ?>" id="<?php echo esc_attr( $this->get_field_id( 'list_item_icon' ) ); ?>" class="cnw-icon-picker widefat">
+				<option value="">Select an icon</option>
+				<?php foreach ( $icons as $icon ) : ?>
+					<option value="<?php echo $icon; ?>"<?php selected( $instance['list_item_icon'], $icon ); ?>><?php echo $icon; ?></option>
+				<?php endforeach; ?>
+			</select>
+		</p>
+		<?php
+	}
+
 }

@@ -69,6 +69,7 @@ class Current_Page extends Page_Base {
 		$mobile_friendly                 = $this->get_mobile_friendly( $instance );
 		$fixed_positioning               = $this->get_fixed_positioning( $instance );
 		$height_aware                    = $this->get_height_aware( $instance );
+		$list_item_icon                  = $this->get_list_item_icon( $instance );
 
 		echo $widget_args['before_widget'];
 
@@ -76,13 +77,14 @@ class Current_Page extends Page_Base {
 
 		// @todo: Consider the logic for here.
 		$args = array(
-			'depth'        => 0,
-			'exclude'      => '',
-			'sort_column'  => $sortby,
-			'link_before'  => '',
-			'link_after'   => '',
-			'item_spacing' => 'preserve',
-			'walker'       => new Current_Page_Walker(),
+			'depth'          => 0,
+			'exclude'        => '',
+			'sort_column'    => $sortby,
+			'link_before'    => '',
+			'link_after'     => '',
+			'item_spacing'   => 'preserve',
+			'list_item_icon' => $list_item_icon,
+			'walker'         => new Current_Page_Walker(),
 		);
 
 		// Get all page objects.
@@ -159,6 +161,7 @@ class Current_Page extends Page_Base {
 		$this->update_mobile_friendly( $new_instance, $instance );
 		$this->update_fixed_positioning( $new_instance, $instance );
 		$this->update_height_aware( $new_instance, $instance );
+		$this->update_list_item_icon( $new_instance, $instance );
 
 		return $instance;
 	}
@@ -182,6 +185,7 @@ class Current_Page extends Page_Base {
 		$this->form_mobile_friendly( $instance );
 		$this->form_fixed_positioning( $instance );
 		$this->form_height_aware( $instance );
+		$this->form_list_item_icon( $instance );
 	}
 
 }
