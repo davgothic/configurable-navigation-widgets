@@ -39,7 +39,7 @@ class Current_Page extends Page_Base {
 			'fixed_positioning'               => false,
 			'height_aware'                    => false,
 			'list_item_icon'                  => '-',
-			'highlight_options'               => '',
+			'highlight_options'               => '000',
 		);
 	}
 
@@ -60,6 +60,7 @@ class Current_Page extends Page_Base {
 		$post_id = $queried_object->ID;
 
 		// @todo: Add include_parent_item functionality.
+		// @todo: Add highlight_options functionality.
 		$title                           = $this->get_title( $instance );
 		$sortby                          = $this->get_sortby( $instance );
 		$exclude                         = $this->get_exclude( $instance );
@@ -70,6 +71,7 @@ class Current_Page extends Page_Base {
 		$fixed_positioning               = $this->get_fixed_positioning( $instance );
 		$height_aware                    = $this->get_height_aware( $instance );
 		$list_item_icon                  = $this->get_list_item_icon( $instance );
+		$highlight_options               = $this->get_highlight_options( $instance );
 
 		echo $widget_args['before_widget'];
 
@@ -162,6 +164,7 @@ class Current_Page extends Page_Base {
 		$this->update_fixed_positioning( $new_instance, $instance );
 		$this->update_height_aware( $new_instance, $instance );
 		$this->update_list_item_icon( $new_instance, $instance );
+		$this->update_highlight_options( $new_instance, $instance );
 
 		return $instance;
 	}
@@ -186,6 +189,7 @@ class Current_Page extends Page_Base {
 		$this->form_fixed_positioning( $instance );
 		$this->form_height_aware( $instance );
 		$this->form_list_item_icon( $instance );
+		$this->form_highlight_options( $instance );
 	}
 
 }

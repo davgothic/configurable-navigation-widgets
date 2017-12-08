@@ -346,4 +346,72 @@ class Base extends \WP_Widget {
 		<?php
 	}
 
+	/**
+	 * Retrieve the highlight_options value.
+	 *
+	 * @param array $instance The settings for the particular instance of the widget.
+	 *
+	 * @return string
+	 */
+	public function get_highlight_options( $instance ) {
+		$highlight_options = empty( $instance['highlight_options'] ) ? $this->defaults['highlight_options'] : $instance['highlight_options'];
+
+		return $highlight_options;
+	}
+
+	/**
+	 * Update the current instance highlight_options.
+	 *
+	 * @param array $new_instance New settings for this instance as input by the user via
+	 *                            WP_Widget::form().
+	 * @param array $instance Current settings for this instance.
+	 */
+	public function update_highlight_options( $new_instance, &$instance ) {
+		$options = [ '0', '0', '0' ];
+
+		if ( isset( $new_instance['highlight_options_1'] ) ) {
+			$options[0] = '1';
+		}
+
+		if ( isset( $new_instance['highlight_options_2'] ) ) {
+			$options[1] = '1';
+		}
+
+		if ( isset( $new_instance['highlight_options_3'] ) ) {
+			$options[2] = '1';
+		}
+
+		$instance['highlight_options'] = implode( '', $options );
+	}
+
+	/**
+	 * Output the highlight_options form fields.
+	 *
+	 * @param array $instance The settings for the particular instance of the widget.
+	 */
+	public function form_highlight_options( $instance ) {
+		$highlight_options = empty( $instance['highlight_options'] )
+			? $this->defaults['highlight_options']
+			: $instance['highlight_options'];
+
+		list( $option_1, $option_2, $option_3 ) = str_split( $highlight_options );
+		$option_1 = '1' === $option_1 ? 'on' : 'off';
+		$option_2 = '1' === $option_2 ? 'on' : 'off';
+		$option_3 = '1' === $option_3 ? 'on' : 'off';
+
+		?>
+		<p>
+			<label for="<?php echo $this->get_field_id( 'highlight_options' ); ?>">Highlight:</label>
+			<input class="checkbox" type="checkbox" <?php checked( $option_1, 'on' ); ?> id="<?php echo $this->get_field_id( 'highlight_options_1' ); ?>" name="<?php echo $this->get_field_name( 'highlight_options_1' ); ?>"/>
+			<label for="<?php echo $this->get_field_id( 'highlight_options_1' ); ?>">Grandparents</label>
+
+			<input class="checkbox" type="checkbox" <?php checked( $option_2, 'on' ); ?> id="<?php echo $this->get_field_id( 'highlight_options_2' ); ?>" name="<?php echo $this->get_field_name( 'highlight_options_2' ); ?>"/>
+			<label for="<?php echo $this->get_field_id( 'highlight_options_2' ); ?>">Current Tree</label>
+
+			<input class="checkbox" type="checkbox" <?php checked( $option_3, 'on' ); ?> id="<?php echo $this->get_field_id( 'highlight_options_3' ); ?>" name="<?php echo $this->get_field_name( 'highlight_options_3' ); ?>"/>
+			<label for="<?php echo $this->get_field_id( 'highlight_options_3' ); ?>">Current Item</label>
+		</p>
+		<?php
+	}
+
 }
